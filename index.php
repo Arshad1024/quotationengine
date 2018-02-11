@@ -25,6 +25,19 @@ $app['errorHandler'] = function($app){
 };
 
 
+# Checks for IP address, if defined in config.php, it will return 403
+$app->before(function(Request $request){
+
+    if(IPS !== "")
+    {
+        $requestMatch = new \Symfony\Component\HttpFoundation\RequestMatcher('/',null,null,explode(',',IPS));
+        if(!$requestMatch->matches($request))
+        {
+            return new Response('<h1>Forbidden</h1><p>You do not have permissions to access this resource</p>',403);
+        }
+    }
+});
+
 
 $app->register(new Silex\Provider\DoctrineServiceProvider());
 $app->register(new Dflydev\Provider\DoctrineOrm\DoctrineOrmServiceProvider);
